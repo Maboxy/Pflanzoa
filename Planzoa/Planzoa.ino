@@ -61,10 +61,10 @@ void setup() {
 
   vector<Pflanze*> *Pflanzen = new vector<Pflanze*>;
 
-  Pflanzen->push_back(new Pflanze("Basili", 55, 4, 12, A0));
- // Pflanzen->push_back(new Pflanze("Bonsi", 50, 2, 13, A1));
- // Pflanzen->push_back(new Pflanze("Minzi", 50, 2, 8, A2));
- // Pflanzen->push_back(new Pflanze("Risi", 50, 2, 7, A3));
+  Pflanzen->push_back(new Pflanze("Basili", 50, 3, 12, A0));
+  // Pflanzen->push_back(new Pflanze("Bonsi", 50, 2, 13, A1));
+  // Pflanzen->push_back(new Pflanze("Minzi", 50, 2, 8, A2));
+  // Pflanzen->push_back(new Pflanze("Risi", 50, 2, 7, A3));
   digitalWrite(12, HIGH);
 
 
@@ -75,9 +75,9 @@ void setup() {
 //Funktion enthaehlt den eigentlichen Programablauf
 void RunScript(vector<Pflanze*> *Pflanzen) {
 
-  const int trocken = 803;
+  const int trocken = 775;
 
-  const int nass = 413;
+  const int nass = 408;
 
   //Endlosschleife bis zum Reset des Controllers
   while (true) {
@@ -93,7 +93,7 @@ void RunScript(vector<Pflanze*> *Pflanzen) {
       Wert = analogRead(Pflanzen->at(i)->getSensorPin());
 
 
-      
+
       pWert = map(Wert, nass, trocken, 100, 0);
 
 
@@ -112,15 +112,12 @@ void RunScript(vector<Pflanze*> *Pflanzen) {
         delay(Pflanzen->at(i)->getDauer() * 1000);
         digitalWrite(Pflanzen->at(i)->getPin(), HIGH);
       }
-
+  
 
       delay(1000);
 
-
-
     }
-
-
-
+    //ca. 24h warten.
+   // delay(87400);
   }
 }
