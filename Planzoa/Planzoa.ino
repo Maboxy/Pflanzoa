@@ -8,7 +8,7 @@ class Pflanze {
     String name;
     //In Prozent
     int Feuchtigkeit;
-    //In ms
+    //In s
     int Dauer;
     int Pin;
     int SensorPin;
@@ -61,40 +61,60 @@ void setup() {
 
   vector<Pflanze*> *Pflanzen = new vector<Pflanze*>;
 
-  Pflanzen->push_back(new Pflanze("Basili", 50, 3000, 12, A0));
-  Pflanzen->push_back(new Pflanze("Boni", 50, 2000, 13, A1));
-  Pflanzen->push_back(new Pflanze("Minzi", 50, 2000, 8, A2));
-  Pflanzen->push_back(new Pflanze("Risi", 50, 2000, 7, A3));
+  Pflanzen->push_back(new Pflanze("Basili", 55, 4, 12, A0));
+ // Pflanzen->push_back(new Pflanze("Bonsi", 50, 2, 13, A1));
+ // Pflanzen->push_back(new Pflanze("Minzi", 50, 2, 8, A2));
+ // Pflanzen->push_back(new Pflanze("Risi", 50, 2, 7, A3));
   digitalWrite(12, HIGH);
 
 
   RunScript(Pflanzen);
 }
 
+
 //Funktion enthaehlt den eigentlichen Programablauf
 void RunScript(vector<Pflanze*> *Pflanzen) {
 
-  const int trocken = 785;
+  const int trocken = 803;
 
-  const int nass = 630;
+  const int nass = 413;
 
   //Endlosschleife bis zum Reset des Controllers
   while (true) {
     //Schleife geht alle Pflanzen durch
     for (int i = 0; i < Pflanzen->size(); i++) {
       //Feuchte Wert des Sensors zur Pflanze
-       double Wert = analogRead(Pflanzen->at(i)->getSensorPin());
 
-       int pWert = map(Wert, nass, trocken, 100,0);
+      double Wert = 0;
 
+      double pWert = 0;
+
+
+      Wert = analogRead(Pflanzen->at(i)->getSensorPin());
+
+
+      
+      pWert = map(Wert, nass, trocken, 100, 0);
+
+
+
+
+
+      Serial.println("pWert:");
       Serial.println(pWert);
+
+
       //Fuer jede Pflanze die Feuchtigkeit ueberpruefen und ggf. Waessern ´
-      if (analogRead(pWert) > Pflanzen->at(i)->getFeuchtigkeit() ) {
+      if (pWert < Pflanzen->at(i)->getFeuchtigkeit() ) {
         Serial.println("Zu trocken!");
         digitalWrite(Pflanzen->at(i)->getPin(), LOW);
-        delay(Pflanzen->at(i)->getDauer());
+        //Von s auf ms
+        delay(Pflanzen->at(i)->getDauer() * 1000);
         digitalWrite(Pflanzen->at(i)->getPin(), HIGH);
       }
+
+
+      delay(1000);
 
 
 
