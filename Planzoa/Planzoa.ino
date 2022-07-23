@@ -6,7 +6,9 @@ using namespace std;
 class Pflanze {
   private:
     String name;
+    //In Prozent
     int Feuchtigkeit;
+    //In ms
     int Dauer;
     int Pin;
     int SensorPin;
@@ -44,9 +46,9 @@ int Pflanze::getPin() {
   return Pin;
 }
 
-int Pflanze::getSensorPin(){
+int Pflanze::getSensorPin() {
   return SensorPin;
-  }
+}
 
 
 
@@ -59,10 +61,10 @@ void setup() {
 
   vector<Pflanze*> *Pflanzen = new vector<Pflanze*>;
 
-  Pflanzen->push_back(new Pflanze("Basili", 500, 3000, 12, A0));
-  Pflanzen->push_back(new Pflanze("Boni", 500, 2000, 13, A1));
-  Pflanzen->push_back(new Pflanze("Minzi", 500, 2000, 8, A2));
-  Pflanzen->push_back(new Pflanze("Risi", 500, 2000, 7, A3));
+  Pflanzen->push_back(new Pflanze("Basili", 50, 3000, 12, A0));
+  Pflanzen->push_back(new Pflanze("Boni", 50, 2000, 13, A1));
+  Pflanzen->push_back(new Pflanze("Minzi", 50, 2000, 8, A2));
+  Pflanzen->push_back(new Pflanze("Risi", 50, 2000, 7, A3));
   digitalWrite(12, HIGH);
 
 
@@ -72,33 +74,29 @@ void setup() {
 //Funktion enthaehlt den eigentlichen Programablauf
 void RunScript(vector<Pflanze*> *Pflanzen) {
 
+  const int trocken = 785;
+
+  const int nass = 630;
+
   //Endlosschleife bis zum Reset des Controllers
   while (true) {
     //Schleife geht alle Pflanzen durch
     for (int i = 0; i < Pflanzen->size(); i++) {
       //Feuchte Wert des Sensors zur Pflanze
-      int Wert = analogRead(Pflanzen->at(i)->getSensorPin());
+       double Wert = analogRead(Pflanzen->at(i)->getSensorPin());
 
-      //Mittelwert aus 5 Werten ermittlen
-      for(int a = 0; a < 100; a++){
-        Wert += analogRead(Pflanzen->at(i)->getSensorPin());
-        }
+       int pWert = map(Wert, nass, trocken, 100,0);
 
-        Wert = Wert / 101;
-
-        Serial.println("Mittelwert= ");
-        Serial.println(Wert);
-       
-
+      Serial.println(pWert);
       //Fuer jede Pflanze die Feuchtigkeit ueberpruefen und ggf. Waessern ´
-      if (analogRead(Wert) > Pflanzen->at(i)->getFeuchtigkeit() ) {
-        Serial.println(Wert);
+      if (analogRead(pWert) > Pflanzen->at(i)->getFeuchtigkeit() ) {
+        Serial.println("Zu trocken!");
         digitalWrite(Pflanzen->at(i)->getPin(), LOW);
         delay(Pflanzen->at(i)->getDauer());
         digitalWrite(Pflanzen->at(i)->getPin(), HIGH);
       }
 
-      
+
 
     }
 
