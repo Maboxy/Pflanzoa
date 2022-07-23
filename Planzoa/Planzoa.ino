@@ -79,17 +79,15 @@ void RunScript(vector<Pflanze*> *Pflanzen) {
       //Feuchte Wert des Sensors zur Pflanze
       int Wert = analogRead(Pflanzen->at(i)->getSensorPin());
 
-      //Ausgabe des Wertes an den SerialMonitor
-      Serial.println(Wert);
-
       //Mittelwert aus 5 Werten ermittlen
-      for(int a = 0; a < 4; a++){
+      for(int a = 0; a < 100; a++){
         Wert += analogRead(Pflanzen->at(i)->getSensorPin());
         }
 
-        Wert = Wert/ 5;
+        Wert = Wert / 101;
 
-        Serial.println("Mittelwert= "+ Wert);
+        Serial.println("Mittelwert= ");
+        Serial.println(Wert);
        
 
       //Fuer jede Pflanze die Feuchtigkeit ueberpruefen und ggf. Waessern ´
